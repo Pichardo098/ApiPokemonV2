@@ -3,6 +3,7 @@ import Header from "../components/pokedex/Header"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import PokemonsList from "../components/pokedex/PokemonsList"
+import Footer from "../components/Footer"
 
 const Pokedex = () => {
 
@@ -12,25 +13,64 @@ const Pokedex = () => {
   const [namePokemon, setNamePokemon] = useState("")
   const [typesPokemon, setTypesPokemon] = useState([])
   const [currentType, setCurrentType] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
 
   const pokemonsByName = pokemons.filter((pokemon)=> pokemon.name.includes(namePokemon) )
 
+  const paginationLogic = () => {
+    const POKEMONS_PER_PAGE = 12
+
+    //Pokemons que se van a mostrar en la pagina actual
+
+    const sliceStart = (currentPage - 1) * POKEMONS_PER_PAGE
+    const sliceEnd = sliceStart + POKEMONS_PER_PAGE
+    const pokemonsInPage = pokemonsByName.slice(sliceStart, sliceEnd )
+
+    //Ultima Página
+    const lastPage = Math.ceil(pokemonsByName.length / POKEMONS_PER_PAGE ) || 1
+
+    //Bloque actual
+    const PAGES_PER_BLOCK = 5
+    const actualBlockk =  Math.ceil(currentPage/PAGES_PER_BLOCK) 
+    
+    //Paginas que se vana  mostrar en el bloque actual
+    const  pagesInBlock = []
+    const minPage = (actualBlockk - 1 ) * PAGES_PER_BLOCK + 1
+    const maxPage = actualBlockk * PAGES_PER_BLOCK
+    for(let i = minPage ; i <= maxPage; i++){
+      if(i <= lastPage)
+      pagesInBlock.push(i)
+    }
+
+    return {
+      pokemonsInPage,
+      lastPage,
+      pagesInBlock
+    }
+  }
+
+  const {pokemonsInPage, lastPage, pagesInBlock} = paginationLogic()
+  console.log({pokemonsInPage, lastPage, pagesInBlock});
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setNamePokemon(e.target.namePokemon.value.toLowerCase().trim() )
+    e.target.reset()
+  }
+  
+  const handleChangeType = (e) => {
+    setCurrentType(e.target.value)
+  }
 
   useEffect(() => {
     if(!currentType){
-      const url = "https://pokeapi.co/api/v2/pokemon?limit=40"
+      const url = "https://pokeapi.co/api/v2/pokemon?limit=1281"
   
       axios.get(url)
         .then(({data})=> setPokemons(data.results))
         .catch(err => console.log(err))
     }
   }, [currentType])
-  
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setNamePokemon(e.target.namePokemon.value.toLowerCase().trim() )
-    e.target.reset()
-  }
   
   useEffect(() => {
     const url = "https://pokeapi.co/api/v2/type/"
@@ -39,10 +79,6 @@ const Pokedex = () => {
       .then(({data}) => setTypesPokemon(data.results))
       .catch(err => console.log(err))
   }, [])
-
-  const handleChangeType = (e) => {
-    setCurrentType(e.target.value)
-  }
 
   useEffect(() => {
     if(currentType){
@@ -59,11 +95,11 @@ const Pokedex = () => {
     }
   }, [currentType])
 
-  
+  //Timing 47:31
   return (
     <div>
       <Header/>
-      <main className="max-w-[1200px] mx-auto px-4 grid gap-4">
+      <main className="max-w-[1200px] mx-auto px-4 grid gap-4 m-5">
         <p className="text-txt_black font-medium"><span className="text-txt_red font-bold">Welcome {nameTrainer},</span> here you can find your favorite pokemon</p>
         
         <form onSubmit={handleSubmit} className="flex justify-between flex-wrap gap-4" >
@@ -82,9 +118,10 @@ const Pokedex = () => {
           </select>
         </form>
 
-        <PokemonsList pokemons={pokemonsByName}/>
+        <PokemonsList pokemons={pokemonsInPage}/>
 
       </main>
+      <Footer/>
     </div>
   )
 }

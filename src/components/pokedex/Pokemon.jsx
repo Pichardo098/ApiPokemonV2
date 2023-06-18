@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import {  useNavigate } from "react-router-dom"
+import Load from "../Load"
 
 const types = {
   normal: [
@@ -120,7 +121,12 @@ const Pokemon = ({pokemon}) => {
       <section className={`${types[pokemonData?.types[0].type.name]?.[0]} relative h-40 rounded-t-lg` }>
         
         <div className="rounded-lg absolute px-8 top-0 ">
-          <img  src={pokemonData?.sprites.other["official-artwork"].front_default} alt={pokemon?.name} />
+          {
+            pokemonData?.sprites.other["official-artwork"].front_default ?
+            <img  src={pokemonData?.sprites.other["official-artwork"].front_default} alt={pokemon?.name} />
+            :
+            <Load/>
+          }
         </div>
       </section>
 

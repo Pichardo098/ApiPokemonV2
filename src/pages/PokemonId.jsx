@@ -3,97 +3,98 @@ import { useParams } from "react-router-dom"
 import Header from "../components/pokedex/Header"
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Footer from "../components/Footer";
 
 const types = {
   normal: [
    "bg-gradient-to-t from-[#735259] via-[#BC6B7C] to-[#7C3F4C]",
    "text-[#735259]",
-   "bg-[#7C3F4C]"
+   "bg-[#735259]"
   ],
   fighting: [
     "bg-gradient-to-t from-[#96402A] via-[#F1613C] to-[#CB735D]",
     "text-[#96402A]",
-    "bg-[#CB735D]"
+    "bg-[#96402A]"
   ],
   flying:[
     "bg-gradient-to-t from-[#84DBF0] via-[#85EFFF] to-[#7ECBEB]",
     "text-[#84DBF0]",
-    "bg-[#7ECBEB]"
+    "bg-[#84DBF0]"
   ],
   poison:[
     "bg-gradient-to-t from-[#5B3184] via-[#A564E3] to-[#CE9BFF]",
     "text-[#5B3184]",
-    "bg-[#CE9BFF]"
+    "bg-[#5B3184]"
   ],
   ground:[
     "bg-gradient-to-t from-[#654008] via-[#895C1A] to-[#D69638]",
     "text-[#654008]",
-    "bg-[#D69638]"
+    "bg-[#654008]"
   ],
   rock:[
     "bg-gradient-to-t from-[#7E7E7E] via-[#8D8D94] to-[#D3D3D3]",
-    "text-[#654008]",
-    "bg-[#D3D3D3]"
+    "text-[#7E7E7E]",
+    "bg-[#7E7E7E]"
   ],
   bug: [
     "bg-gradient-to-t from-[#62DB60] via-[#3BB039] to-[#AAFFA8]",
     "text-[#62DB60]",
-    "bg-[#AAFFA8]"
+    "bg-[#62DB60]"
   ],
   ghost:[
     "bg-gradient-to-t from-[#323569] via-[#454AA8] to-[#787DDA]",
     "text-[#323569]",
-    "bg-[#787DDA]"
+    "bg-[#323569]"
   ],
   steel:[
     "bg-gradient-to-t from-[#5E736C] via-[#728881] to-[#A8A8A8]",
     "text-[#5E736C]",
-    "bg-[#A8A8A8]"
+    "bg-[#5E736C]"
   ],
   fire:[
     "bg-gradient-to-t from-[#F96D6F] via-[#E35825] to-[#E8AE1B]",
     "text-[#F96D6F]",
-    "bg-[#E8AE1B]"
+    "bg-[#F96D6F]"
   ],
   water:[
     "bg-gradient-to-t from-[#133258] via-[#1479FB] to-[#82B2F1]",
     "text-[#133258]",
-    "bg-[#82B2F1]"
+    "bg-[#133258]"
   ],
   grass: [
     "bg-gradient-to-t from-[#7EC6C5] via-[#ABDAC6] to-[#CAE099]",
     "text-[#7EC6C5]",
-    "bg-[#CAE099]"
+    "bg-[#7EC6C5]"
   ],
   electric: [
     "bg-gradient-to-t from-[#0C1395] via-[#2B319B] to-[#7075D9]",
     "text-[#0C1395]",
-    "bg-[#7075D9]"
+    "bg-[#0C1395]"
   ],
   psychic: [
     "bg-gradient-to-t from-[#4A3CDB] via-[#FF0061] to-[#FEC194]",
     "text-[#4A3CDB]",
-    "bg-[#FEC194]"
+    "bg-[#4A3CDB]"
   ],
   ice:[
     "bg-gradient-to-t from-[#6FBEDF] via-[#64CBF5] to-[#BDEBFE]",
     "text-[#6FBEDF]",
-    "bg-[#BDEBFE]"
+    "bg-[#6FBEDF]"
   ],
   dragon:[
     "bg-gradient-to-t from-[#478A93] via-[#56A4AE] to-[#A2BEC1]",
     "text-[#478A93]",
-    "bg-[#A2BEC1]"
+    "bg-[#478A93]"
   ],
   dark:[
     "bg-gradient-to-t from-[#030706] via-[#0D1211] to-[#5A5E5D]",
     "text-[#030706]",
-    "bg-[#5A5E5D]"
+    "bg-[#030706]"
   ],
   fairy: [
     "bg-gradient-to-t from-[#971B45] via-[#C23867] to-[#CD7D98]",
     "text-[#971B45]",
-    "bg-[#CD7D98]"
+    "bg-[#971B45]"
   ],
   unknown:[
     "",
@@ -126,14 +127,13 @@ const PokemonId = () => {
       .catch(err => console.log(err))
   }, [])
 
-  console.log(pokemon?.moves[0]);
+
   
 
-  //type.type.name[0].toUpperCase() + type.type.name.substring(1)
   return (
     <div>
       <Header/>
-      <main className="bg-bkg_white">
+      <main className="bg-bkg_white pb-6">
         {/* Información de pokemon */}
         <article className="max-w-[1000px]  bg-white rounded-md shadow-lg shadow-gray-500 mx-4 mt-[80px] lg:mx-auto">
           {/* Seccion de Imagen y fondo gradient */}
@@ -147,7 +147,7 @@ const PokemonId = () => {
 
           {/* Specs pokemon */}
           <section className="text-center flex flex-col gap-3 justify-center ">
-            <span className={`font-bold border-2 border-[#D3D3D3] w-[40px] self-center ${types[pokemon?.types[0].type.name]?.[1]}`}>#{pokemon?.id}</span>
+            <span className={`font-bold border-2 border-[#D3D3D3] px-2 self-center ${types[pokemon?.types[0].type.name]?.[1]}`}>#{pokemon?.id}</span>
             <section className="flex flex-row justify-center items-center gap-4">
               <hr className="w-[100%] h-[2px] bg-[#D3D3D3]"/>
               <h1 className={`${types[pokemon?.types[0].type.name]?.[1]} font-bold text-2xl`}>{pokemon?.name[0].toUpperCase() + pokemon?.name.substring(1)}</h1>
@@ -160,10 +160,20 @@ const PokemonId = () => {
             <section className="grid grid-cols-2  text-center max-[400px]:grid-cols-1 gap-2">
               <section className="flex flex-col gap-2 ">
                 <h2 className="font-semibold text-xl">Type</h2>
-                <section className="grid grid-cols-2 gap-3   text-bkg_white">
-                  <p className={`px-8 border-2 ${types[pokemon?.types[0].type.name]?.[2]}`}>{pokemon?.types[0].type.name[0].toUpperCase() + pokemon?.types[0].type.name.substring(1)}</p>
-                  <p className={`px-8 border-2 ${types[pokemon?.types[1].type.name]?.[2]}`}>{pokemon?.types[1].type.name[0].toUpperCase() + pokemon?.types[1].type.name.substring(1)}</p>
-                </section>
+                
+                  {
+                    types[pokemon?.types[1]?.type.name] ? 
+                    <section className="grid grid-cols-2 gap-3   text-bkg_white">
+                    <p className={`px-8 border-2 ${types[pokemon?.types[0].type.name]?.[2]}`}>{pokemon?.types[0].type.name[0].toUpperCase() + pokemon?.types[0].type.name.substring(1)}</p>  
+                    <p className={`px-8 border-2 ${types[pokemon?.types[1].type.name]?.[2]}`}>{pokemon?.types[1].type.name[0].toUpperCase() + pokemon?.types[1].type.name.substring(1)}</p>
+                    </section>
+                    :
+                    <section className="grid grid-cols-1 gap-3   text-bkg_white">
+                    <p className={`px-8 border-2 ${types[pokemon?.types[0].type.name]?.[2]}`}>{pokemon?.types[0].type.name[0].toUpperCase() + pokemon?.types[0].type.name.substring(1)}</p>  
+                    </section>
+                  }
+                
+                
               </section>
               <section className="flex flex-col gap-2">
                 <h2 className="font-semibold text-xl">Abilities</h2>
@@ -228,6 +238,7 @@ const PokemonId = () => {
             </section>
         </article>
       </main>
+      <Footer/>
     </div>
   )
 }
