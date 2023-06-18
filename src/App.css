@@ -1,0 +1,39 @@
+header{
+  background: linear-gradient(to bottom, red 60%, black 40%);
+}
+
+#header_pokeball{
+  overflow: hidden;
+  animation: rotate infinite ease-in-out 3s ;
+}
+
+@keyframes rotate {
+  0% {
+    rotate: 0deg;
+  }
+  50% {
+    
+  }
+  100%{
+    rotate: 360deg;
+  }
+}
+
+#pokemon_ball:hover{
+  animation: 2s balanceo 1;
+}
+
+@keyframes balanceo {
+
+ 20% {
+   transform: scale(0.9) rotate(-3deg);
+ }
+
+ 30%, 50%, 70%, 90% {
+   transform: scale(1.1) rotate(3deg);
+ }
+
+ 40%, 60%, 80% {
+   transform: scale(1.1) rotate(-3deg);
+ }
+}
