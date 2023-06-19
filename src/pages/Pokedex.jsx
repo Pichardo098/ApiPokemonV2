@@ -117,6 +117,16 @@ const Pokedex = () => {
             }
           </select>
         </form>
+        {/* Paginación */}
+        <ul className="flex justify-around">
+          <li className="bg-btn_red py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover">{"<"}</li>
+          {
+            pagesInBlock.map(numberPage => (
+              <li onClick={()=> setCurrentPage(numberPage)} className="bg-btn_red py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover" key={numberPage}>{numberPage}</li>
+            ))
+          }
+          <li className="bg-btn_red py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover">{">"}</li>
+        </ul>
 
         <PokemonsList pokemons={pokemonsInPage}/>
 
