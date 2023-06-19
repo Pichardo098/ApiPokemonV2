@@ -131,7 +131,7 @@ const Pokemon = ({pokemon}) => {
       </section>
 
 
-      <section className="bg-white rounded-b-lg pt-10 text-txt_black">
+      <section className="bg-white dark:bg-dk_bg_card rounded-b-lg pt-10 text-txt_black dark:text-bkg_white">
         <h3 className={`font-bold text-xl ${types[pokemonData?.types[0].type.name]?.[1]}`}>{pokemon?.name[0].toUpperCase() + pokemon?.name.substring(1) }</h3>
         <h5 className="font-medium">{formatTypePokemons(pokemonData?.types)}</h5>
         <h2>Type</h2>

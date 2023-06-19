@@ -135,15 +135,15 @@ const PokemonId = () => {
   
 
   return (
-    <div className="bg-bkg_white">
+    <div className="bg-bkg_white dark:bg-dk_bg">
       <Header/>
-      <main className="bg-bkg_white pb-6 relative text-center">
+      <main className="bg-bkg_white dark:bg-dk_bg pb-6 relative text-center">
 
-        <button onClick={handleClickReturnPokedex} className="h-10 bg-btn_red hover:bg-btn_hover text-bkg_white font-bold text-2xl rounded-full  translate-x-1/2 z-20 px-4 aspect-square">
+        <button onClick={handleClickReturnPokedex} className="h-10 bg-btn_red hover:bg-btn_hover hover:text-txt_black text-bkg_white font-bold text-2xl rounded-full left-1/2  z-20 px-4 aspect-square">
         <i className='bx bx-left-arrow-alt'></i>
         </button>
         {/* Información de pokemon */}
-        <article className="max-w-[1000px]  bg-white rounded-md shadow-lg shadow-gray-500 mx-4 mt-[80px] lg:mx-auto">
+        <article className="max-w-[1000px]  bg-white dark:bg-dk_bg_card dark:text-bkg_white rounded-md shadow-lg shadow-gray-500 mx-4 mt-[80px] lg:mx-auto">
           {/* Seccion de Imagen y fondo gradient */}
           <section className={`${types[pokemon?.types[0].type.name]?.[0]} relative h-40 rounded-t-lg flex justify-center` }>
         
@@ -230,7 +230,7 @@ const PokemonId = () => {
 
         </article>
         
-        <article className="max-w-[1000px]  bg-white rounded-md shadow-lg shadow-gray-500 mx-4 mt-[50px] lg:mx-auto">
+        <article className="max-w-[1000px]  bg-white dark:bg-dk_bg_card dark:text-bkg_white rounded-md shadow-lg shadow-gray-500 mx-4 mt-[50px] lg:mx-auto">
         <section className="p-6">
               <section className="flex items-center gap-3">
                 <h4 className="font-bold text-2xl">Movements</h4>
@@ -244,7 +244,7 @@ const PokemonId = () => {
                 
                 pokemon?.moves.slice(1,26).map((move)=> (
                   
-                  <p className="bg-bkg_white p-[6px] rounded-full text-[15px] md:text-[20px] md:p-4" key={move.move.name }>{move.move.name[0].toUpperCase() + move.move.name.substring(1)}</p>
+                  <p className="bg-bkg_white dark:text-dk_bg_card p-[6px] rounded-full text-[15px] md:text-[20px] md:p-4" key={move.move.name }>{move.move.name[0].toUpperCase() + move.move.name.substring(1)}</p>
                 ))
               }
               </section>

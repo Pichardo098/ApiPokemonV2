@@ -4,11 +4,14 @@ import Home from './pages/Home'
 import Pokedex from './pages/Pokedex'
 import PokemonId from './pages/PokemonId'
 import ProtectedRoutes from './components/auth/ProtectedRoutes'
+import { useSelector } from 'react-redux'
 
 function App() {
 
+  const darkModeSlice = useSelector((store)=> store.darkModeSlice)
+
   return (
-    <div id='body' className=' min-h-screen bg-bkg_white font-["Inter]'>
+    <div id='body' className={` min-h-screen font-["Inter] ${darkModeSlice && "dark"} transition-all delay-1000`} >
       <Routes>
         <Route path='/' element={<Home/> }></Route>
         {/* Rutas protegidas */}

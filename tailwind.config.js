@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -14,6 +15,10 @@ export default {
         btn_hover: "#ED8F8F",
         txt_red: "#FE1936",
         txt_black: "#333333",
+
+        dk_bg: "#173562",
+        dk_txt: "#B8DDC9",
+        dk_bg_card: "#4F5062"
       }
     },
   },

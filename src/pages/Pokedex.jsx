@@ -127,29 +127,27 @@ const Pokedex = () => {
   const hasPokemons  = pokemonsInPage.length > 0
   
   const actualPage = (currentPage, numberPage) => {
-    if(currentPage == numberPage){
+    if(currentPage == numberPage)
       return "blur(0)"
-    }else{
-      return "blur(3px)"
-    }
+    
   }
 
   
 
 
   return (
-    <div className="flex flex-col justify-between min-h-screen ">
+    <div className="flex flex-col justify-between min-h-screen bg-bkg_white dark:bg-dk_bg">
       <Header/>
       <main className="max-w-[1200px] mx-auto px-4 grid gap-4 m-5 w-full ">
-        <p className="text-txt_black font-medium"><span className="text-txt_red font-bold">Welcome {nameTrainer},</span> here you can find your favorite pokemon</p>
+        <p className="text-txt_black dark:text-bkg_white font-medium"><span className="text-txt_red dark:text-dk_txt font-bold">Welcome {nameTrainer},</span> here you can find your favorite pokemon</p>
         
         <form onSubmit={handleSubmit} className="flex justify-between flex-wrap gap-4 " >
           <div className="flex font-semibold">
-            <input className="rounded-l-md  border-none outline-none font-semibold p-2" id="namePokemon" placeholder="Type a name pokemon..." type="text" />
-            <button className="rounded-r-md bg-btn_red hover:bg-btn_hover text-bkg_white px-2 font-semibold ">Search</button>
+            <input className="rounded-l-md dark:bg-dk_txt dark:text-dk_bg_card border-none outline-none font-semibold p-2" id="namePokemon" placeholder="Type a name pokemon..." type="text" />
+            <button className="rounded-r-md bg-btn_red hover:bg-btn_hover border-btn_red dark:bg-dk_bg_card dark:hover:border-dk_txt border-2 dark:border-dk_bg_card text-bkg_white px-2 font-semibold ">Search</button>
           </div>
 
-          <select onChange={handleChangePokemonsPerPage} className="border-none utline-none bg-btn_red rounded-md px-2 text-bkg_white text-center">
+          <select onChange={handleChangePokemonsPerPage} className="cursor-pointer border-none utline-none dark:bg-dk_bg_card bg-btn_red rounded-md px-2 text-bkg_white text-center">
             <option value={pokemonsPerPage}>Pokemons per page</option>
             <option value="4">4</option>
             <option value="8">8</option>
@@ -158,7 +156,7 @@ const Pokedex = () => {
             <option value="20">20</option>
           </select>
 
-          <select onChange={handleChangeType} className="overflow-scroll border-none outline-none bg-btn_red rounded-md px-2 text-bkg_white ">
+          <select onChange={handleChangeType} className="cursor-pointer overflow-scroll border-none outline-none  dark:bg-dk_bg_card bg-btn_red rounded-md px-2 text-bkg_white ">
             <option value="">All Types</option>
             {
               typesPokemon.map((type)=> (
@@ -174,15 +172,15 @@ const Pokedex = () => {
           hasPokemons &&
         <ul className="flex justify-around ">
           
-          <li onClick={()=>setCurrentPage(1)} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<<"}</li>
-          <li onClick={handleClickPreviousPage} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<"}</li>
+          <li onClick={()=>setCurrentPage(1)} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<<"}</li>
+          <li onClick={handleClickPreviousPage} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<"}</li>
           {
             pagesInBlock.map(numberPage => (
-              <li style={{filter: actualPage(currentPage,numberPage)}} className={`bg-btn_red py-2 px-4 blur-sm hover:blur-none text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer   hover:scale-125  ` } onClick={()=> setCurrentPage(numberPage)} key={numberPage}>{numberPage}</li>
+              <li style={{filter: actualPage(currentPage,numberPage)}} className={`bg-btn_red py-2 px-4 blur-sm hover:blur-none text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer  hover:scale-125  ` } onClick={()=> setCurrentPage(numberPage)} key={numberPage}>{numberPage}</li>
             ))
           }
-          <li onClick={handleClickNextPage} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">"}</li>
-          <li onClick={()=>setCurrentPage(lastPage)} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">>"}</li>
+          <li onClick={handleClickNextPage} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">"}</li>
+          <li onClick={()=>setCurrentPage(lastPage)} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">>"}</li>
 
         </ul>
         }
