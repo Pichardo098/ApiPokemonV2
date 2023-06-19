@@ -49,13 +49,25 @@ const Pokedex = () => {
     }
   }
 
+  const handleClickPreviousPage = () => {
+    const newCurrentPage = currentPage - 1
+    if(newCurrentPage >= 1){
+      setCurrentPage(newCurrentPage)
+    }
+  }
+
+  const handleClickNextPage = () => {
+    const newCurrentPage = currentPage + 1
+    if(newCurrentPage <= lastPage){
+      setCurrentPage(newCurrentPage)
+    }
+  }
+
   const {pokemonsInPage, lastPage, pagesInBlock} = paginationLogic()
-  console.log({pokemonsInPage, lastPage, pagesInBlock});
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setNamePokemon(e.target.namePokemon.value.toLowerCase().trim() )
-    e.target.reset()
   }
   
   const handleChangeType = (e) => {
@@ -95,14 +107,21 @@ const Pokedex = () => {
     }
   }, [currentType])
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [namePokemon,currentType])
+  
+  const hasPokemons  = pokemonsInPage.length > 0
+  
+
   //Timing 47:31
   return (
-    <div>
+    <div className="flex flex-col justify-between min-h-screen ">
       <Header/>
-      <main className="max-w-[1200px] mx-auto px-4 grid gap-4 m-5">
+      <main className="max-w-[1200px] mx-auto px-4 grid gap-4 m-5 w-full ">
         <p className="text-txt_black font-medium"><span className="text-txt_red font-bold">Welcome {nameTrainer},</span> here you can find your favorite pokemon</p>
         
-        <form onSubmit={handleSubmit} className="flex justify-between flex-wrap gap-4" >
+        <form onSubmit={handleSubmit} className="flex justify-between flex-wrap gap-4 " >
           <div className="flex font-semibold">
             <input className="rounded-l-md  border-none outline-none font-semibold p-2" id="namePokemon" placeholder="Type a name pokemon..." type="text" />
             <button className="rounded-r-md bg-btn_red hover:bg-btn_hover text-bkg_white px-2 font-semibold ">Search</button>
@@ -112,23 +131,30 @@ const Pokedex = () => {
             <option value="">All Types</option>
             {
               typesPokemon.map((type)=> (
-                <option key={type.url} value={type.name}>{type.name}</option>
+                <option key={type.url} value={type.name}>{type.name[0].toUpperCase() + type.name.substring(1)}</option>
               ))
             }
           </select>
         </form>
-        {/* Paginación */}
-        <ul className="flex justify-around">
-          <li className="bg-btn_red py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover">{"<"}</li>
-          {
-            pagesInBlock.map(numberPage => (
-              <li onClick={()=> setCurrentPage(numberPage)} className="bg-btn_red py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover" key={numberPage}>{numberPage}</li>
-            ))
-          }
-          <li className="bg-btn_red py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover">{">"}</li>
-        </ul>
 
         <PokemonsList pokemons={pokemonsInPage}/>
+        {/* Paginación */}
+        {
+          hasPokemons &&
+        <ul className="flex justify-around ">
+          
+          <li onClick={()=>setCurrentPage(1)} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<<"}</li>
+          <li onClick={handleClickPreviousPage} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<"}</li>
+          {
+            pagesInBlock.map(numberPage => (
+              <li onClick={()=> setCurrentPage(numberPage)} className={`bg-btn_red py-2 px-4 blur-sm ${numberPage == currentPage && "blur-none"} hover:blur-none text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer  hover:bg-btn_hover hover:scale-125  ` }key={numberPage}>{numberPage}</li>
+            ))
+          }
+          <li onClick={handleClickNextPage} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">"}</li>
+          <li onClick={()=>setCurrentPage(lastPage)} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">>"}</li>
+
+        </ul>
+        }
 
       </main>
       <Footer/>

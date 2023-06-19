@@ -11,7 +11,7 @@ const Header = () => {
   }
   
   return (
-    <header className="mb-6  mx-auto relative ">
+    <header className="mb-6  mx-auto relative w-full">
       <section className='absolute top-0 h-20'>
         <div className="h-[60%] bg-red_header"></div>
         <div className="h-[40%] bg-black_header"></div>

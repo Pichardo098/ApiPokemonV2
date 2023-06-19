@@ -1,9 +1,10 @@
 
-import { useParams } from "react-router-dom"
+import {   useNavigate, useParams } from "react-router-dom"
 import Header from "../components/pokedex/Header"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Footer from "../components/Footer";
+import Load from "../components/Load";
 
 const types = {
   normal: [
@@ -127,20 +128,32 @@ const PokemonId = () => {
       .catch(err => console.log(err))
   }, [])
 
-
+  const navigate = useNavigate()
+  const handleClickReturnPokedex = () => {
+    navigate(`/pokedex`)
+  }
   
 
   return (
-    <div>
+    <div className="bg-bkg_white">
       <Header/>
-      <main className="bg-bkg_white pb-6">
+      <main className="bg-bkg_white pb-6 relative text-center">
+
+        <button onClick={handleClickReturnPokedex} className="h-10 bg-btn_red hover:bg-btn_hover text-bkg_white font-bold text-2xl rounded-full  translate-x-1/2 z-20 px-4 aspect-square">
+        <i className='bx bx-left-arrow-alt'></i>
+        </button>
         {/* Información de pokemon */}
         <article className="max-w-[1000px]  bg-white rounded-md shadow-lg shadow-gray-500 mx-4 mt-[80px] lg:mx-auto">
           {/* Seccion de Imagen y fondo gradient */}
           <section className={`${types[pokemon?.types[0].type.name]?.[0]} relative h-40 rounded-t-lg flex justify-center` }>
         
             <div className="rounded-lg absolute px-8 bottom-0 max-w-[300px] mx-auto ">
-              <img  src={pokemon?.sprites.other["official-artwork"].front_default} alt={pokemon?.name} />
+              {
+                pokemon?.sprites.other["official-artwork"].front_default ? 
+                <img  src={pokemon?.sprites.other["official-artwork"].front_default} alt={pokemon?.name} />
+                :
+                <Load/>
+              }
             </div>
           </section>
           <section className="max-w-[800px] mx-auto p-4">
@@ -150,7 +163,7 @@ const PokemonId = () => {
             <span className={`font-bold border-2 border-[#D3D3D3] px-2 self-center ${types[pokemon?.types[0].type.name]?.[1]}`}>#{pokemon?.id}</span>
             <section className="flex flex-row justify-center items-center gap-4">
               <hr className="w-[100%] h-[2px] bg-[#D3D3D3]"/>
-              <h1 className={`${types[pokemon?.types[0].type.name]?.[1]} font-bold text-2xl`}>{pokemon?.name[0].toUpperCase() + pokemon?.name.substring(1)}</h1>
+              <h1 className={`${types[pokemon?.types[0].type.name]?.[1]} font-bold text-2xl`}>{pokemon?.name[0]?.toUpperCase() + pokemon?.name.substring(1)}</h1>
               <hr className="w-[100%] h-[2px] bg-[#D3D3D3]" />
             </section>
             <section className="flex justify-center gap-5">
