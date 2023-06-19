@@ -1,24 +1,28 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import Header from "../components/pokedex/Header"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import PokemonsList from "../components/pokedex/PokemonsList"
 import Footer from "../components/Footer"
+import { setPokemonsPerPage } from "../store/slices/pokemonsPerPage.slice"
 
 const Pokedex = () => {
 
   const nameTrainer = useSelector((store)=> store.nameTrainer)
+  const pokemonsPerPage = useSelector((store) => store.pokemonsPerPage)
 
   const [pokemons, setPokemons] = useState([])
   const [namePokemon, setNamePokemon] = useState("")
   const [typesPokemon, setTypesPokemon] = useState([])
   const [currentType, setCurrentType] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
+  const dispatch = useDispatch()
+  
 
   const pokemonsByName = pokemons.filter((pokemon)=> pokemon.name.includes(namePokemon) )
 
   const paginationLogic = () => {
-    const POKEMONS_PER_PAGE = 12
+    const POKEMONS_PER_PAGE = pokemonsPerPage
 
     //Pokemons que se van a mostrar en la pagina actual
 
@@ -74,6 +78,15 @@ const Pokedex = () => {
     setCurrentType(e.target.value)
   }
 
+  
+  const handleChangePokemonsPerPage = (e) => {
+    if(!e.target.value){
+      dispatch(setPokemonsPerPage(12))
+    }else{
+      dispatch(setPokemonsPerPage(+e.target.value))
+    }
+  }
+
   useEffect(() => {
     if(!currentType){
       const url = "https://pokeapi.co/api/v2/pokemon?limit=1281"
@@ -109,12 +122,21 @@ const Pokedex = () => {
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [namePokemon,currentType])
+  }, [namePokemon,currentType,pokemonsPerPage])
   
   const hasPokemons  = pokemonsInPage.length > 0
   
+  const actualPage = (currentPage, numberPage) => {
+    if(currentPage == numberPage){
+      return "blur(0)"
+    }else{
+      return "blur(3px)"
+    }
+  }
 
-  //Timing 47:31
+  
+
+
   return (
     <div className="flex flex-col justify-between min-h-screen ">
       <Header/>
@@ -127,11 +149,20 @@ const Pokedex = () => {
             <button className="rounded-r-md bg-btn_red hover:bg-btn_hover text-bkg_white px-2 font-semibold ">Search</button>
           </div>
 
-          <select onChange={handleChangeType} className="overflow-scroll border-none outline-none">
+          <select onChange={handleChangePokemonsPerPage} className="border-none utline-none bg-btn_red rounded-md px-2 text-bkg_white text-center">
+            <option value={pokemonsPerPage}>Pokemons per page</option>
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="12">12</option>
+            <option value="16">16</option>
+            <option value="20">20</option>
+          </select>
+
+          <select onChange={handleChangeType} className="overflow-scroll border-none outline-none bg-btn_red rounded-md px-2 text-bkg_white ">
             <option value="">All Types</option>
             {
               typesPokemon.map((type)=> (
-                <option key={type.url} value={type.name}>{type.name[0].toUpperCase() + type.name.substring(1)}</option>
+                <option   key={type.url} value={type.name}>{type.name[0].toUpperCase() + type.name.substring(1)}</option>
               ))
             }
           </select>
@@ -147,7 +178,7 @@ const Pokedex = () => {
           <li onClick={handleClickPreviousPage} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<"}</li>
           {
             pagesInBlock.map(numberPage => (
-              <li onClick={()=> setCurrentPage(numberPage)} className={`bg-btn_red py-2 px-4 blur-sm ${numberPage == currentPage && "blur-none"} hover:blur-none text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer  hover:bg-btn_hover hover:scale-125  ` }key={numberPage}>{numberPage}</li>
+              <li style={{filter: actualPage(currentPage,numberPage)}} className={`bg-btn_red py-2 px-4 blur-sm hover:blur-none text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer   hover:scale-125  ` } onClick={()=> setCurrentPage(numberPage)} key={numberPage}>{numberPage}</li>
             ))
           }
           <li onClick={handleClickNextPage} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-bold shadow-lg shadow-gray-500 cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">"}</li>
