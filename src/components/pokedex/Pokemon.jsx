@@ -109,6 +109,7 @@ const Pokemon = ({pokemon}) => {
   
 
   const handleMoreInfo = () => {
+    
     navigate(`/pokedex/${pokemon?.name}`)
   }
   return (

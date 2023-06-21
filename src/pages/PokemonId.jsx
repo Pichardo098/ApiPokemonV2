@@ -190,10 +190,17 @@ const PokemonId = () => {
               </section>
               <section className="flex flex-col gap-2">
                 <h2 className="font-semibold text-xl">Abilities</h2>
+                {
+                  pokemon?.abilities[1] ? 
                 <section className="grid grid-cols-2 gap-3 text-center justify-center items-center max-[365px]:flex max-[365px]:flex-wrap">
                   <p className="border-2 border-[#D3D3D3] px-8">{pokemon?.abilities[0].ability.name[0].toUpperCase() + pokemon?.abilities[0].ability.name.substring(1)}</p>
                   <p className="border-2 border-[#D3D3D3] px-8">{pokemon?.abilities[1].ability.name[0].toUpperCase() + pokemon?.abilities[1].ability.name.substring(1)}</p>
                 </section>
+                :
+                <section className="grid grid-cols-1 gap-3 text-center justify-center items-center max-[365px]:flex max-[365px]:flex-wrap">
+                  <p className="border-2 border-[#D3D3D3] px-8">{pokemon?.abilities[0].ability.name[0].toUpperCase() + pokemon?.abilities[0].ability.name.substring(1)}</p>
+                </section>
+                }
               </section>
             </section>
           </section>
