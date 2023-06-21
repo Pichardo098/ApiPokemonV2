@@ -170,18 +170,18 @@ const PokemonId = () => {
               <p className="grid text-center">Weigth <span className="font-bold">{pokemon?.weight}</span> </p>
               <p className="grid text-center">Height <span className="font-bold">{pokemon?.height}</span> </p>
             </section>
-            <section className="grid grid-cols-2  text-center max-[400px]:grid-cols-1 gap-2">
-              <section className="flex flex-col gap-2 ">
+            <section className="grid grid-cols-2  text-center max-[660px]:grid-cols-1 gap-2 items-center">
+              <section className="flex flex-col gap-2 font-semibold">
                 <h2 className="font-semibold text-xl">Type</h2>
                 
                   {
                     types[pokemon?.types[1]?.type.name] ? 
-                    <section className="grid grid-cols-2 gap-3   text-bkg_white">
+                    <section className="grid grid-cols-2 gap-3 text-center items-center  text-bkg_white">
                     <p className={`px-8 border-2 ${types[pokemon?.types[0].type.name]?.[2]}`}>{pokemon?.types[0].type.name[0].toUpperCase() + pokemon?.types[0].type.name.substring(1)}</p>  
                     <p className={`px-8 border-2 ${types[pokemon?.types[1].type.name]?.[2]}`}>{pokemon?.types[1].type.name[0].toUpperCase() + pokemon?.types[1].type.name.substring(1)}</p>
                     </section>
                     :
-                    <section className="grid grid-cols-1 gap-3   text-bkg_white">
+                    <section className="grid grid-cols-1 gap-3 text-center items-center  text-bkg_white">
                     <p className={`px-8 border-2 ${types[pokemon?.types[0].type.name]?.[2]}`}>{pokemon?.types[0].type.name[0].toUpperCase() + pokemon?.types[0].type.name.substring(1)}</p>  
                     </section>
                   }
@@ -190,7 +190,7 @@ const PokemonId = () => {
               </section>
               <section className="flex flex-col gap-2">
                 <h2 className="font-semibold text-xl">Abilities</h2>
-                <section className="grid grid-cols-2 gap-3   items-center">
+                <section className="grid grid-cols-2 gap-3 text-center justify-center items-center max-[365px]:flex max-[365px]:flex-wrap">
                   <p className="border-2 border-[#D3D3D3] px-8">{pokemon?.abilities[0].ability.name[0].toUpperCase() + pokemon?.abilities[0].ability.name.substring(1)}</p>
                   <p className="border-2 border-[#D3D3D3] px-8">{pokemon?.abilities[1].ability.name[0].toUpperCase() + pokemon?.abilities[1].ability.name.substring(1)}</p>
                 </section>
