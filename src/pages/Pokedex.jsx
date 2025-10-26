@@ -1,153 +1,221 @@
-import { useDispatch, useSelector } from "react-redux"
-import Header from "../components/pokedex/Header"
-import { useEffect, useState } from "react"
-import axios from "axios"
-import PokemonsList from "../components/pokedex/PokemonsList"
-import Footer from "../components/Footer"
-import { setPokemonsPerPage } from "../store/slices/pokemonsPerPage.slice"
+import { useDispatch, useSelector } from 'react-redux';
+import Header from '../components/pokedex/Header';
+import { useEffect, useState } from 'react';
+import PokemonsList from '../components/pokedex/PokemonsList';
+import Footer from '../components/Footer';
+import { setPokemonsPerPage } from '../store/slices/pokemonsPerPage.slice';
+import {
+  getCatalogTypes,
+  getFavoritesPokemons,
+  getPokemons,
+  getPokemonsByType,
+} from './API';
 
 const Pokedex = () => {
+  const nameTrainer = useSelector((store) => store.nameTrainer.username);
+  const idTrainer = useSelector((store) => store.nameTrainer._id);
+  const pokemonsPerPage = useSelector((store) => store.pokemonsPerPage);
 
-  const nameTrainer = useSelector((store)=> store.nameTrainer)
-  const pokemonsPerPage = useSelector((store) => store.pokemonsPerPage)
+  const [pokemons, setPokemons] = useState([]);
+  const [namePokemon, setNamePokemon] = useState([]);
+  const [typesPokemon, setTypesPokemon] = useState([]);
+  const [viewFavorites, setViewFavorites] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useDispatch();
 
-  const [pokemons, setPokemons] = useState([])
-  const [namePokemon, setNamePokemon] = useState("")
-  const [typesPokemon, setTypesPokemon] = useState([])
-  const [currentType, setCurrentType] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const dispatch = useDispatch()
-  
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const pokemonsByName = pokemons.filter((pokemon)=> pokemon.name.includes(namePokemon) )
+  const pokemonsByName =
+    namePokemon.length === 0
+      ? pokemons
+      : pokemons.filter((pokemon) =>
+          namePokemon.some((name) => pokemon.name.includes(name))
+        );
 
   const paginationLogic = () => {
-    const POKEMONS_PER_PAGE = pokemonsPerPage
+    const POKEMONS_PER_PAGE = pokemonsPerPage;
 
     //Pokemons que se van a mostrar en la pagina actual
 
-    const sliceStart = (currentPage - 1) * POKEMONS_PER_PAGE
-    const sliceEnd = sliceStart + POKEMONS_PER_PAGE
-    const pokemonsInPage = pokemonsByName.slice(sliceStart, sliceEnd )
+    const sliceStart = (currentPage - 1) * POKEMONS_PER_PAGE;
+    const sliceEnd = sliceStart + POKEMONS_PER_PAGE;
+    const pokemonsInPage = pokemonsByName.slice(sliceStart, sliceEnd);
 
     //Ultima Página
-    const lastPage = Math.ceil(pokemonsByName.length / POKEMONS_PER_PAGE ) || 1
+    const lastPage = Math.ceil(pokemonsByName.length / POKEMONS_PER_PAGE) || 1;
 
     //Bloque actual
-    const PAGES_PER_BLOCK = 5
-    const actualBlockk =  Math.ceil(currentPage/PAGES_PER_BLOCK) 
-    
+    const PAGES_PER_BLOCK = 5;
+    const actualBlockk = Math.ceil(currentPage / PAGES_PER_BLOCK);
+
     //Paginas que se vana  mostrar en el bloque actual
-    const  pagesInBlock = []
-    const minPage = (actualBlockk - 1 ) * PAGES_PER_BLOCK + 1
-    const maxPage = actualBlockk * PAGES_PER_BLOCK
-    for(let i = minPage ; i <= maxPage; i++){
-      if(i <= lastPage)
-      pagesInBlock.push(i)
+    const pagesInBlock = [];
+    const minPage = (actualBlockk - 1) * PAGES_PER_BLOCK + 1;
+    const maxPage = actualBlockk * PAGES_PER_BLOCK;
+    for (let i = minPage; i <= maxPage; i++) {
+      if (i <= lastPage) pagesInBlock.push(i);
     }
 
     return {
       pokemonsInPage,
       lastPage,
-      pagesInBlock
-    }
-  }
+      pagesInBlock,
+    };
+  };
 
   const handleClickPreviousPage = () => {
-    const newCurrentPage = currentPage - 1
-    if(newCurrentPage >= 1){
-      setCurrentPage(newCurrentPage)
+    const newCurrentPage = currentPage - 1;
+    if (newCurrentPage >= 1) {
+      setCurrentPage(newCurrentPage);
     }
-  }
+  };
 
   const handleClickNextPage = () => {
-    const newCurrentPage = currentPage + 1
-    if(newCurrentPage <= lastPage){
-      setCurrentPage(newCurrentPage)
+    const newCurrentPage = currentPage + 1;
+    if (newCurrentPage <= lastPage) {
+      setCurrentPage(newCurrentPage);
     }
-  }
+  };
 
-  const {pokemonsInPage, lastPage, pagesInBlock} = paginationLogic()
+  const { pokemonsInPage, lastPage, pagesInBlock } = paginationLogic();
+
+  // ---------- UTILS ---------- //
+  const handleErrorMessage = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage('');
+    }, 2000);
+  };
+
+  // ---------- GET DATA ---------- //
+
+  const fetchCatalogTypes = async () => {
+    const response = await getCatalogTypes();
+
+    if (!response.status.toString().startsWith('2')) {
+      return handleErrorMessage(response.response.message);
+    }
+
+    setTypesPokemon(response.response.results);
+  };
+
+  const getAllPokemons = async () => {
+    const response = await getPokemons();
+
+    if (!response.status.toString().startsWith('2')) {
+      return handleErrorMessage(response.response.message);
+    }
+
+    setPokemons(response.response.results);
+  };
+
+  const fetchPokemonsByType = async (type) => {
+    if (!type) {
+      setNamePokemon([]);
+      return;
+    }
+
+    const response = await getPokemonsByType(type);
+
+    if (!response.status.toString().startsWith('2')) {
+      return handleErrorMessage(response.response.message);
+    }
+
+    const filterNames = response.response.pokemons;
+
+    setNamePokemon(filterNames);
+  };
+
+  const fetchFavoritesPokemons = async () => {
+    if (viewFavorites) {
+      setViewFavorites(false);
+      setNamePokemon([]);
+      return;
+    }
+
+    const response = await getFavoritesPokemons(idTrainer);
+
+    if (!response.status.toString().startsWith('2')) {
+      return handleErrorMessage(response.response.message);
+    }
+
+    const names = response.response.map((pokemon) => pokemon.pokemon);
+    setNamePokemon(names);
+    setViewFavorites(true);
+  };
+
+  useEffect(() => {
+    fetchCatalogTypes();
+    getAllPokemons();
+  }, []);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    setNamePokemon(e.target.namePokemon.value.toLowerCase().trim() )
-  }
-  
+    e.preventDefault();
+    setNamePokemon([e.target.namePokemon.value.toLowerCase().trim()]);
+  };
+
   const handleChangeType = (e) => {
-    setCurrentType(e.target.value)
-  }
+    e.preventDefault();
+    fetchPokemonsByType(e.target.value.toLowerCase().trim());
+  };
 
-  
   const handleChangePokemonsPerPage = (e) => {
-    if(!e.target.value){
-      dispatch(setPokemonsPerPage(12))
-    }else{
-      dispatch(setPokemonsPerPage(+e.target.value))
+    if (!e.target.value) {
+      dispatch(setPokemonsPerPage(12));
+    } else {
+      dispatch(setPokemonsPerPage(+e.target.value));
     }
-  }
+  };
 
   useEffect(() => {
-    if(!currentType){
-      const url = "https://pokeapi.co/api/v2/pokemon?limit=1281"
-  
-      axios.get(url)
-        .then(({data})=> setPokemons(data.results))
-        .catch(err => console.log(err))
-    }
-  }, [currentType])
-  
-  useEffect(() => {
-    const url = "https://pokeapi.co/api/v2/type/"
+    setCurrentPage(1);
+  }, [namePokemon, pokemonsPerPage]);
 
-    axios.get(url)
-      .then(({data}) => setTypesPokemon(data.results))
-      .catch(err => console.log(err))
-  }, [])
+  const hasPokemons = pokemonsInPage.length > 0;
 
-  useEffect(() => {
-    if(currentType){
-      const url = `https://pokeapi.co/api/v2/type/${currentType}/`
-
-      axios.get(url)
-      .then(({data})=> {
-        let pokemonsByType = data.pokemon.map((pokemon)=> (
-          pokemon.pokemon
-        ))
-        setPokemons(pokemonsByType)
-        })
-      .catch(err => console.log(err))
-    }
-  }, [currentType])
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [namePokemon,currentType,pokemonsPerPage])
-  
-  const hasPokemons  = pokemonsInPage.length > 0
-  
   const actualPage = (currentPage, numberPage) => {
-    if(currentPage == numberPage)
-      return "blur(0)"
-    
-  }
-
-  
-
+    if (currentPage == numberPage) return 'blur(0)';
+  };
 
   return (
     <div className="flex flex-col justify-between min-h-screen bg-bkg_white dark:bg-dk_bg">
-      <Header/>
+      <Header />
       <main className="max-w-[1200px] mx-auto px-4 grid gap-4 m-5 w-full ">
-        <p className="text-txt_black dark:text-bkg_white font-medium"><span className="text-txt_red dark:text-dk_txt font-bold">Welcome {nameTrainer},</span> here you can find your favorite pokemon</p>
-        
-        <form onSubmit={handleSubmit} className="flex justify-between flex-wrap gap-4 " >
+        <div className="flex justify-between items-center">
+          <p className="text-txt_black dark:text-bkg_white font-medium">
+            <span className="text-txt_red dark:text-dk_txt font-bold">
+              Welcome {nameTrainer},
+            </span>{' '}
+            here you can find your favorite pokemon
+          </p>
+          <button
+            className="dark:text-dk_bg_card  dark:bg-dk_txt font-medium rounded-full p-2"
+            onClick={fetchFavoritesPokemons}
+          >
+            {viewFavorites ? 'View All' : 'View Favorites!'}
+          </button>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex justify-between flex-wrap gap-4 "
+        >
           <div className="flex font-semibold">
-            <input className="rounded-l-md dark:bg-dk_txt dark:text-dk_bg_card border-none outline-none font-semibold p-2" id="namePokemon" placeholder="Type a name pokemon..." type="text" />
-            <button className="rounded-r-md bg-btn_red hover:bg-btn_hover border-btn_red dark:bg-dk_bg_card dark:hover:border-dk_txt border-2 dark:border-dk_bg_card text-bkg_white px-2 font-semibold ">Search</button>
+            <input
+              className="rounded-l-md dark:bg-dk_txt dark:text-dk_bg_card border-none outline-none font-semibold p-2"
+              id="namePokemon"
+              placeholder="Type a name pokemon..."
+              type="text"
+            />
+            <button className="rounded-r-md bg-btn_red hover:bg-btn_hover border-btn_red dark:bg-dk_bg_card dark:hover:border-dk_txt border-2 dark:border-dk_bg_card text-bkg_white px-2 font-semibold ">
+              Search
+            </button>
           </div>
 
-          <select onChange={handleChangePokemonsPerPage} className="cursor-pointer border-none utline-none dark:bg-dk_bg_card bg-btn_red rounded-md px-2 text-bkg_white text-center">
+          <select
+            onChange={handleChangePokemonsPerPage}
+            className="cursor-pointer border-none utline-none dark:bg-dk_bg_card bg-btn_red rounded-md px-2 text-bkg_white text-center"
+          >
             <option value={pokemonsPerPage}>Pokemons per page</option>
             <option value="4">4</option>
             <option value="8">8</option>
@@ -156,39 +224,80 @@ const Pokedex = () => {
             <option value="20">20</option>
           </select>
 
-          <select onChange={handleChangeType} className="cursor-pointer overflow-scroll border-none outline-none  dark:bg-dk_bg_card bg-btn_red rounded-md px-2 text-bkg_white ">
+          <select
+            onChange={handleChangeType}
+            className="cursor-pointer overflow-scroll border-none outline-none  dark:bg-dk_bg_card bg-btn_red rounded-md px-2 text-bkg_white "
+          >
             <option value="">All Types</option>
-            {
-              typesPokemon.map((type)=> (
-                <option   key={type.url} value={type.name}>{type.name[0].toUpperCase() + type.name.substring(1)}</option>
-              ))
-            }
+            {typesPokemon.map((type) => (
+              <option key={type.url} value={type.name}>
+                {type.name.toUpperCase()}
+              </option>
+            ))}
           </select>
         </form>
 
-        <PokemonsList pokemons={pokemonsInPage}/>
+        <PokemonsList pokemons={pokemonsInPage} />
         {/* Paginación */}
-        {
-          hasPokemons &&
-        <ul className="flex justify-around ">
-          
-          <li onClick={()=>setCurrentPage(1)} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<<"}</li>
-          <li onClick={handleClickPreviousPage} className={`bg-btn_red ${currentPage == 1 ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{"<"}</li>
-          {
-            pagesInBlock.map(numberPage => (
-              <li style={{filter: actualPage(currentPage,numberPage)}} className={`bg-btn_red py-2 px-4 blur-sm hover:blur-none text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer  hover:scale-125  ` } onClick={()=> setCurrentPage(numberPage)} key={numberPage}>{numberPage}</li>
-            ))
-          }
-          <li onClick={handleClickNextPage} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">"}</li>
-          <li onClick={()=>setCurrentPage(lastPage)} className={`bg-btn_red ${currentPage == lastPage ? "hidden":"visible"} py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}>{">>"}</li>
+        {hasPokemons && (
+          <ul className="flex justify-around ">
+            <li
+              onClick={() => setCurrentPage(1)}
+              className={`bg-btn_red ${
+                currentPage == 1 ? 'hidden' : 'visible'
+              } py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}
+            >
+              {'<<'}
+            </li>
+            <li
+              onClick={handleClickPreviousPage}
+              className={`bg-btn_red ${
+                currentPage == 1 ? 'hidden' : 'visible'
+              } py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}
+            >
+              {'<'}
+            </li>
+            {pagesInBlock.map((numberPage) => (
+              <li
+                style={{ filter: actualPage(currentPage, numberPage) }}
+                className={`bg-btn_red py-2 px-4 blur-sm hover:blur-none text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer  hover:scale-125  `}
+                onClick={() => setCurrentPage(numberPage)}
+                key={numberPage}
+              >
+                {numberPage}
+              </li>
+            ))}
+            <li
+              onClick={handleClickNextPage}
+              className={`bg-btn_red ${
+                currentPage == lastPage ? 'hidden' : 'visible'
+              } py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}
+            >
+              {'>'}
+            </li>
+            <li
+              onClick={() => setCurrentPage(lastPage)}
+              className={`bg-btn_red ${
+                currentPage == lastPage ? 'hidden' : 'visible'
+              } py-2 px-4 text-bkg_white rounded-md font-extrabold shadow-lg shadow-gray-500 dark:shadow-dk_bg_card cursor-pointer hover:bg-btn_hover hover:scale-125  `}
+            >
+              {'>>'}
+            </li>
+          </ul>
+        )}
 
-        </ul>
-        }
-
+        {/* Alert */}
+        {errorMessage && (
+          <div className="absolute top-4 inset-x-0 flex justify-center z-50">
+            <p className="bg-red-100 text-red-700 font-semibold text-xl px-4 py-2 rounded shadow">
+              {errorMessage}
+            </p>
+          </div>
+        )}
       </main>
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Pokedex
+export default Pokedex;

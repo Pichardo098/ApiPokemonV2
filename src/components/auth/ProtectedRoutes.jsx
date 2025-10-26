@@ -1,14 +1,14 @@
-import { useSelector } from "react-redux"
-import { Navigate, Outlet } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoutes = () => {
-  const nameTrainer = useSelector((store)=> store.nameTrainer )
+    const nameTrainer = useSelector((store) => store.nameTrainer.username);
 
-  if(nameTrainer){
-    return <Outlet/>
-  }else{
-    return <Navigate to="/"/>
-  }
-}
+    if (nameTrainer) {
+        return <Outlet />;
+    } else {
+        return <Navigate to="/" />;
+    }
+};
 
-export default ProtectedRoutes
+export default ProtectedRoutes;

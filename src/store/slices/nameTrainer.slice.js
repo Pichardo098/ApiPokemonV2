@@ -1,15 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-const nameTrainerSlice = createSlice({
-  initialState: localStorage.getItem("nameTrainer") ?? "" ,
-  name: "nameTrainer" ,
-  reducers: {
-    setNameTrainer: (state, action) => {
-      localStorage.setItem("nameTrainer", action.payload)
-      return action.payload
+const initialState = JSON.parse(localStorage.getItem('trainerData')) || {
+    _id: '',
+    username: ''
+};
+
+const trainerSlice = createSlice({
+    name: 'trainer',
+    initialState,
+    reducers: {
+        setTrainerData: (state, action) => {
+            localStorage.setItem('trainerData', JSON.stringify(action.payload));
+            return action.payload;
+        },
+        clearTrainerData: () => {
+            localStorage.removeItem('trainerData');
+            return { _id: '', username: '' };
+        }
     }
-  }
-})
+});
 
-export const {setNameTrainer} = nameTrainerSlice.actions
-export default nameTrainerSlice.reducer
+export const { setTrainerData, clearTrainerData } = trainerSlice.actions;
+export default trainerSlice.reducer;
